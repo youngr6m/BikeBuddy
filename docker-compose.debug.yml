@@ -1,0 +1,32 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+version: '3.4'
+
+services:
+  bikebuddyapi:
+    image: bikebuddyapi
+    build:
+      context: .
+      dockerfile: bikebuddy.api/Dockerfile
+      args:
+        - configuration=Debug
+    ports:
+      - 8080:4040
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
+
+  bikebuddyweb:
+    image: bikebuddyapp
+    build:
+      context: .
+      dockerfile: bikebuddy.app/Dockerfile
+      args:
+        - configuration=Debug
+    ports:
+      - 8081:8081
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
