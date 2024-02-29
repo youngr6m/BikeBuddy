@@ -51,8 +51,8 @@ jobs:
 
     - name: Deploy API to Azure Container App
       run: |
-        az containerapp create --name ${{ env.AZURE_CONTAINER_APP_NAME }}-api --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} --environment ${{ env.AZURE_ACR_ENVIRONMENT }} --registry-username bbreg --registry-password ${{ secrets.AZURE_ACR_ADMIN }} --image ${{ env.API_IMAGE_NAME }}:latest
+        az containerapp create --name ${{ env.AZURE_CONTAINER_APP_NAME }}-api --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} --environment ${{ env.AZURE_ACR_ENVIRONMENT }} --registry-username bbreg --registry-password ${{ secrets.AZURE_ACR_ADMIN }} --image bbreg.azurecr.io/${{ env.API_IMAGE_NAME }}:latest
 
     - name: Deploy Web to Azure Container App
       run: |
-        az containerapp create --name ${{ env.AZURE_CONTAINER_APP_NAME }}-web --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} --environment ${{ env.AZURE_ACR_ENVIRONMENT }} --registry-username bbreg --registry-password ${{ secrets.AZURE_ACR_ADMIN }} --image ${{ env.WEB_IMAGE_NAME }}:latest
+        az containerapp create --name ${{ env.AZURE_CONTAINER_APP_NAME }}-web --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} --environment ${{ env.AZURE_ACR_ENVIRONMENT }} --registry-username bbreg --registry-password ${{ secrets.AZURE_ACR_ADMIN }} --image bbreg.azurecr.io/${{ env.WEB_IMAGE_NAME }}:latest
