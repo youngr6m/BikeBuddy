@@ -44,7 +44,7 @@ else
     {
         // call the bikebuddy.api weatherforecast api using httpclient
         HttpClient Http = new HttpClient();
-        bikes = await Http.GetFromJsonAsync<Bike[]>("https://bikebuddyapi--rzbpbs2.internal.blackplant-d7ab1a13.northeurope.azurecontainerapps.io/bikes:4040");
+        bikes = await Http.GetFromJsonAsync<Bike[]>("http://bikebuddyapi/bikes");
     }
 
 }
