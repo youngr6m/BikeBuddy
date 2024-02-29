@@ -49,6 +49,7 @@ jobs:
         push: true
         tags: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.WEB_IMAGE_NAME }}:latest
 
+
     - name: Deploy API to Azure Container App
       run: |
         az containerapp create --name ${{ env.API_IMAGE_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} --environment ${{ env.AZURE_ACR_ENVIRONMENT }} --registry-username bbreg --registry-password ${{ secrets.AZURE_ACR_ADMIN }} --ingress internal --target-port:4040 --image bbreg.azurecr.io/${{ env.API_IMAGE_NAME }}:latest
