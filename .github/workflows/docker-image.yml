@@ -8,6 +8,7 @@ on:
 env:
   AZURE_CONTAINER_APP_NAME: bikebuddy-apps
   AZURE_CONTAINER_REGISTRY: bbreg.azurecr.io
+  AZURE_RESOURCE_GROUP: BikeBuddy
   API_IMAGE_NAME: bikebuddyapi
   WEB_IMAGE_NAME: bikebuddyweb
 
@@ -49,8 +50,8 @@ jobs:
 
     - name: Deploy API to Azure Container App
       run: |
-        az containerapp create --name ${{ env.AZURE_CONTAINER_APP_NAME }}-api --registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} --image ${{ env.API_IMAGE_NAME }}:latest
+        az containerapp create --name ${{ env.AZURE_CONTAINER_APP_NAME }}-api --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} --image ${{ env.API_IMAGE_NAME }}:latest
 
     - name: Deploy Web to Azure Container App
       run: |
-        az containerapp create --name ${{ env.AZURE_CONTAINER_APP_NAME }}-web --registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} --image ${{ env.WEB_IMAGE_NAME }}:latest
+        az containerapp create --name ${{ env.AZURE_CONTAINER_APP_NAME }}-web --resource-group ${{ env.AZURE_RESOURCE_GROUP }}--registry-server ${{ env.AZURE_CONTAINER_REGISTRY }} --image ${{ env.WEB_IMAGE_NAME }}:latest
