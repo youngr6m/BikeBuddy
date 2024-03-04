@@ -18,5 +18,7 @@ namespace bikebuddy.models
         public string NickName { get; set; }
         public DateTime PurchaseDate { get; set; }
         public long Odometer { get; set; }
+        public string Colour { get; set; }
+       
     }
 }
