@@ -396,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+bikebuddy.app/appsettings.Development.json
+bikebuddy.app/appsettings.json

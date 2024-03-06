@@ -1,0 +1,211 @@
+@page "/activities"
+@using System.Net.Http
+@using bikebuddy.models
+@using Microsoft.AspNetCore.Authorization
+@using System.Globalization;
+@using System.Text.Json.Serialization;
+@using System.Text.Json;
+@attribute [StreamRendering]
+@attribute [Authorize]
+
+<PageTitle>Connect to Strava</PageTitle>
+
+<p>Connected to Strava</p>
+
+@code {
+
+    public class StravaActivity
+    {
+        [JsonPropertyName("resource_state")]
+        public int ResourceState { get; set; }
+
+        [JsonPropertyName("athlete")]
+        public Athlete Athlete { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("distance")]
+        public float? Distance { get; set; }
+
+        [JsonPropertyName("moving_time")]
+        public int MovingTime { get; set; }
+
+        [JsonPropertyName("elapsed_time")]
+        public int ElapsedTime { get; set; }
+
+        [JsonPropertyName("total_elevation_gain")]
+        public float TotalElevationGain { get; set; }
+
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
+
+        [JsonPropertyName("sport_type")]
+        public string SportType { get; set; }
+
+        [JsonPropertyName("id")]
+        public long Id { get; set; }
+
+        [JsonPropertyName("start_date")]
+        public DateTime StartDate { get; set; }
+
+        [JsonPropertyName("start_date_local")]
+        public DateTime StartDateLocal { get; set; }
+
+        [JsonPropertyName("timezone")]
+        public string TimeZone { get; set; }
+
+        [JsonPropertyName("utc_offset")]
+        public float UtcOffset { get; set; }
+
+        [JsonPropertyName("location_country")]
+        public string LocationCountry { get; set; }
+
+        [JsonPropertyName("achievement_count")]
+        public int AchievementCount { get; set; }
+
+        [JsonPropertyName("kudos_count")]
+        public int KudosCount { get; set; }
+
+        [JsonPropertyName("comment_count")]
+        public int CommentCount { get; set; }
+
+        [JsonPropertyName("athlete_count")]
+        public int AthleteCount { get; set; }
+
+        [JsonPropertyName("photo_count")]
+        public int PhotoCount { get; set; }
+
+        [JsonPropertyName("map")]
+        public Map Map { get; set; }
+
+        [JsonPropertyName("trainer")]
+        public bool Trainer { get; set; }
+
+        [JsonPropertyName("commute")]
+        public bool Commute { get; set; }
+
+        [JsonPropertyName("manual")]
+        public bool Manual { get; set; }
+
+        [JsonPropertyName("private")]
+        public bool Private { get; set; }
+
+        [JsonPropertyName("visibility")]
+        public string Visibility { get; set; }
+
+        [JsonPropertyName("flagged")]
+        public bool Flagged { get; set; }
+
+        [JsonPropertyName("gear_id")]
+        public string GearId { get; set; }
+
+        [JsonPropertyName("start_latlng")]
+        public List<double> StartLatLng { get; set; }
+
+        [JsonPropertyName("end_latlng")]
+        public List<double> EndLatLng { get; set; }
+    }
+
+    public class Athlete
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("resource_state")]
+        public int ResourceState { get; set; }
+    }
+
+    public class Map
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("summary_polyline")]
+        public string SummaryPolyline { get; set; }
+
+        [JsonPropertyName("resource_state")]
+        public int ResourceState { get; set; }
+    }
+
+    private List<StravaActivity> activities = new List<StravaActivity>();
+
+    private string exceptionMessage = string.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Authorization" , "Bearer 0b75f98e1b0ccb55c57fc9058bb38bc9b6fb9534");
+        var response = await client.GetAsync("https://www.strava.com/api/v3/athlete/activities?page=1&per_page=30&access");
+
+
+        try
+        {
+            var stravaActivities = await response.Content.ReadFromJsonAsync<List<StravaActivity>>();
+            activities = stravaActivities;
+        }
+        catch(Exception ex)
+        {
+            exceptionMessage = ex.ToString();
+        }
+    }  
+
+}
+
+@if(!string.IsNullOrEmpty(exceptionMessage))
+    {
+    <code>
+        <h3>Exception Message</h3>
+        <p>@exceptionMessage</p>
+    </code>
+    }
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Type</th>
+            <th>Sport Type</th>
+            <th>Name</th>
+            <th>Elapsed Time</th>
+            <th>Distance</th>
+            <th>Start Date and Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var activity in activities.OrderByDescending(a => a.StartDate))
+        {
+            <tr>
+                <td>@activity.Id</td>
+                <td>@activity.Type</td>
+                <td>@activity.SportType</td>
+                <td>@activity.Name</td>
+                <td>@TimeSpan.FromSeconds(activity.ElapsedTime).ToString(@"hh\:mm\:ss")</td>
+                <td style="text-align: right;">@(activity.Distance.HasValue ? ((double)(activity.Distance / 1000)).ToString("0.00"): "0") km</td>
+                <td>
+                    @{
+                        var startDate = activity.StartDate.Date;
+                        var currentDate = DateTime.Now.Date;
+                        var timeFormat = "h:mm tt";
+
+                        if (startDate == currentDate)
+                        {
+                            <text>Today at @activity.StartDate.ToString(timeFormat)</text>
+                        }
+                        else if (startDate == currentDate.AddDays(-1))
+                        {
+                            <text>Yesterday at @activity.StartDate.ToString(timeFormat)</text>
+                        }
+                        else
+                        {
+                            <text>@activity.StartDate.ToString("MMMM d, yyyy 'at' ") @activity.StartDate.ToString(timeFormat)</text>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+

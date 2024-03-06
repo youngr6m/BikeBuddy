@@ -16,5 +16,6 @@ namespace bikebuddy.models
         public Bike? Bike { get; set; }
         public TimeSpan? TimeInterval { get; set; }
         public long? OdometerInterval { get; set; }
+
     }
 }
